@@ -24,7 +24,7 @@ nb_epoch = 1
 # model creation: Three convolutional layers
 model = Sequential()
 
-# apply a 5x5 convolution with 32 output filters on a 180x320 image:
+# apply a 5x5 convolution with 32 output filters on a 64x64 image:
 model.add(Convolution2D(32, 5, 5, init='normal', border_mode='same',
                         input_shape=(img_width, img_height, 3)))
 model.add(Activation('relu'))
