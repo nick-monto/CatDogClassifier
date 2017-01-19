@@ -3,14 +3,14 @@ from keras.models import Sequential
 from keras.layers import Convolution2D, MaxPooling2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 
-img_width, img_height = 64, 64  # set image dimensions to 320x180 pixels
+img_width, img_height = 100, 100
 
 training_data_dir = 'input/trainSmall'  # directory for training data
 test_data_dir = 'input/validation'  # directory for test data
 
-nb_train_samples = 2002
-nb_val_samples = 1001
-nb_epoch = 1
+num_train_samples = 2002
+num_val_samples = 1001
+num_epoch = 25
 
 # # set up checkpoints for weights
 # filepath="weights-improvement-{epoch:02d}-{accuracy:.2f}.hdf5"
@@ -25,7 +25,7 @@ nb_epoch = 1
 model = Sequential()
 
 # apply a 5x5 convolution with 32 output filters on a 64x64 image:
-model.add(Convolution2D(32, 5, 5, init='normal', border_mode='same',
+model.add(Convolution2D(32, 3, 3, border_mode='same',
                         input_shape=(img_width, img_height, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -38,18 +38,10 @@ model.add(Convolution2D(64, 3, 3, border_mode='same'))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
-model.add(Convolution2D(128, 3, 3, border_mode='same'))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-
 model.add(Flatten())  # converts 3D feature mapes to 1D feature vectors
-model.add(Dense(128))
+model.add(Dense(64))
 model.add(Activation('relu'))
-model.add(Dropout(0.5))  # reset half of the weights to zero
-
-# model.add(Dense(128))
-# model.add(Activation('relu'))
-# model.add(Dropout(0.5))
+model.add(Dropout(0.3))  # reset half of the weights to zero
 
 model.add(Dense(1))
 model.add(Activation('sigmoid'))
@@ -61,8 +53,8 @@ model.compile(loss='binary_crossentropy',
 # set of augments that will be applied to the training data
 train_datagen = ImageDataGenerator(
             rescale=1./255,
-            shear_range=0.2,
-            zoom_range=0.2,
+            shear_range=0.1,
+            zoom_range=0.1,
             horizontal_flip=True,
             fill_mode='nearest')
 
@@ -91,10 +83,10 @@ validation_generator = test_datagen.flow_from_directory(
 
 model.fit_generator(
         train_generator,
-        samples_per_epoch=nb_train_samples,
-        nb_epoch=nb_epoch,
+        samples_per_epoch=num_train_samples,
+        nb_epoch=num_epoch,
         validation_data=validation_generator,
-        nb_val_samples=nb_val_samples,
+        nb_val_samples=num_val_samples,
         verbose=1
         )
 
